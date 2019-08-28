@@ -1,5 +1,8 @@
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import static java.lang.Integer.parseInt;
 
 public class Duke {
     public static void main(String[] args) {
@@ -23,6 +26,7 @@ public class Duke {
 
         String userCmd = "";
         ArrayList<String> cmdList = new ArrayList<>();
+        ArrayList<Task> taskList = new ArrayList<>();
 
         while (true) {
             userCmd = input.nextLine();
@@ -31,11 +35,21 @@ public class Duke {
                 break;
             }
             if (userCmd.equals("list")) {
-                for(int i=0; i<cmdList.size(); i++) {
-                    System.out.println(i+1 + ". " + cmdList.get(i));
+                System.out.println("Here are the tasks in your list:");
+                for(int i=0; i<taskList.size(); i++) {
+                    System.out.println(i+1 + ". " + "[" + taskList.get(i).getStatusIcon() + "] " + taskList.get(i).getDescription());
                 }
             }
+            else if (userCmd.contains("done")) {
+                System.out.println("Nice! I've marked this tasks as done:");
+                String[] numberString = userCmd.split(" ");
+                int number = parseInt(numberString[1]);
+                taskList.get(number-1).toggleIsDone();
+                System.out.println("[" + taskList.get(number-1).getStatusIcon() + "] " + taskList.get(number-1).getDescription());
+            }
             else {
+                Task t = new Task(userCmd);
+                taskList.add(t);
                 cmdList.add(userCmd);
                 System.out.println("added: " + userCmd);
             }
