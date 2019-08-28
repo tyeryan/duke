@@ -21,17 +21,24 @@ public class Duke {
     public static void userCmd() {
         Scanner input = new Scanner(System.in);
 
-        String userCmd = input.nextLine();
+        String userCmd = "";
         ArrayList<String> cmdList = new ArrayList<>();
 
         while (true) {
+            userCmd = input.nextLine();
             if (userCmd.equals("bye")) {
                 System.out.println("Bye. Hope to see you again soon!");
                 break;
             }
-            System.out.println(userCmd);
-            userCmd = input.nextLine();
-            cmdList.add(userCmd);
+            if (userCmd.equals("list")) {
+                for(int i=0; i<cmdList.size(); i++) {
+                    System.out.println(i+1 + ". " + cmdList.get(i));
+                }
+            }
+            else {
+                cmdList.add(userCmd);
+                System.out.println("added: " + userCmd);
+            }
         }
     }
 }
