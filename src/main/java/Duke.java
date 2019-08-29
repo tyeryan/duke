@@ -5,7 +5,7 @@ import java.util.Scanner;
 import static java.lang.Integer.parseInt;
 
 public class Duke {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DukeException {
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
                 + "| | | | | | | |/ / _ \\\n"
@@ -16,24 +16,29 @@ public class Duke {
         userCmd();
     }
 
+    //Greeting of Duke
     public static void greeting() {
         System.out.println("Hello I'm Duke");
         System.out.println("What can I do for you?");
     }
 
-    public static void userCmd() {
+    //Interaction with the user
+    public static void userCmd() throws DukeException {
         Scanner input = new Scanner(System.in);
 
         String userCmd = "";
         ArrayList<String> cmdList = new ArrayList<>();
         ArrayList<Task> taskList = new ArrayList<>();
+        String[] cmdTypes = {"bye", "list", "todo", "event", "deadline", "done"};
 
         while (true) {
             userCmd = input.nextLine();
+
             if (userCmd.equals("bye")) {
                 System.out.println("Bye. Hope to see you again soon!");
                 break;
             }
+
             if (userCmd.equals("list")) {
                 System.out.println("Here are the tasks in your list:");
                 for(int i=0; i<taskList.size(); i++) {
@@ -48,9 +53,16 @@ public class Duke {
                 System.out.println("[" + taskList.get(number-1).getStatusIcon() + "] " + taskList.get(number-1).getDescription());
             }
 
+            //if todo is the command
             else if (userCmd.contains("todo")) {
                 String[] userInput = userCmd.split(" ");
                 String task = "";
+
+                //Throwing an exception if argument is empty
+                if(userInput.length == 1) {
+                    throw new DukeException("☹ OOPS!!! The description of a todo cannot be empty.");
+                }
+
                 for(int i=1; i<userInput.length; i++) {
                     task += userInput[i] + " ";
                 }
@@ -61,6 +73,7 @@ public class Duke {
                 System.out.println("Now you have " + taskList.size() + " in the list");
             }
 
+            //if deadline is the command
             else if (userCmd.contains("deadline")) {
                 String[] userInput = userCmd.split(" ");
                 String task = "";
@@ -80,6 +93,7 @@ public class Duke {
                 System.out.println("Now you have " + taskList.size() + " in the list");
             }
 
+            //if event is the command
             else if (userCmd.contains("event")) {
                 String[] userInput = userCmd.split(" ");
                 String task = "";
@@ -101,11 +115,13 @@ public class Duke {
                 System.out.println("Now you have " + taskList.size() + "tasks in the list");
             }
 
+            //if no command words are being used
             else {
-                Task t = new Task(userCmd);
-                taskList.add(t);
-                cmdList.add(userCmd);
-                System.out.println("added: " + userCmd);
+                throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+//                Task t = new Task(userCmd);
+//                taskList.add(t);
+//                cmdList.add(userCmd);
+//                System.out.println("added: " + userCmd);
             }
         }
     }
