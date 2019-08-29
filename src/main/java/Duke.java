@@ -37,7 +37,7 @@ public class Duke {
             if (userCmd.equals("list")) {
                 System.out.println("Here are the tasks in your list:");
                 for(int i=0; i<taskList.size(); i++) {
-                    System.out.println(i+1 + ". " + "[" + taskList.get(i).getStatusIcon() + "] " + taskList.get(i).getDescription());
+                    System.out.println(i+1 + ". " + taskList.get(i).toString());
                 }
             }
             else if (userCmd.contains("done")) {
@@ -47,6 +47,60 @@ public class Duke {
                 taskList.get(number-1).toggleIsDone();
                 System.out.println("[" + taskList.get(number-1).getStatusIcon() + "] " + taskList.get(number-1).getDescription());
             }
+
+            else if (userCmd.contains("todo")) {
+                String[] userInput = userCmd.split(" ");
+                String task = "";
+                for(int i=1; i<userInput.length; i++) {
+                    task += userInput[i] + " ";
+                }
+                Task t = new ToDo(task);
+                taskList.add(t);
+                System.out.println("Got it. I've added this task:");
+                System.out.println(t.toString());
+                System.out.println("Now you have " + taskList.size() + " in the list");
+            }
+
+            else if (userCmd.contains("deadline")) {
+                String[] userInput = userCmd.split(" ");
+                String task = "";
+                String date = "";
+                for(int i=1; i<userInput.length; i++) {
+                    if(userInput[i].equals("/by")) {
+                        date = userInput[i+1];
+                        break;
+                    }
+                    task += userInput[i] + " ";
+                }
+                System.out.println(task);
+                Task t = new Deadline(task, date);
+                taskList.add(t);
+                System.out.println("Got it. I've added this task:");
+                System.out.println(t.toString());
+                System.out.println("Now you have " + taskList.size() + " in the list");
+            }
+
+            else if (userCmd.contains("event")) {
+                String[] userInput = userCmd.split(" ");
+                String task = "";
+                String date = "";
+                for(int i=1; i<userInput.length; i++) {
+                    if(userInput[i].equals("/at")) {
+                        for(int j=i+1; j<userInput.length; j++) {
+                            date += userInput[j] + " ";
+                        }
+                        break;
+                    }
+                    task += userInput[i] + " ";
+                }
+                System.out.println(task);
+                Task t = new Event(task, date);
+                taskList.add(t);
+                System.out.println("Got it. I've added this task:");
+                System.out.println(t.toString());
+                System.out.println("Now you have " + taskList.size() + "tasks in the list");
+            }
+
             else {
                 Task t = new Task(userCmd);
                 taskList.add(t);
