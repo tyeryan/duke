@@ -1,118 +1,171 @@
-import java.sql.SQLOutput;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static java.lang.Integer.parseInt;
+import static java.text.DateFormat.*;
 
 public class Duke {
-    public static void main(String[] args) throws DukeException {
-        String logo = " ____        _        \n"
-                + "|  _ \\ _   _| | _____ \n"
-                + "| | | | | | | |/ / _ \\\n"
-                + "| |_| | |_| |   <  __/\n"
-                + "|____/ \\__,_|_|\\_\\___|\n";
-        System.out.println("Hello from\n" + logo);
+    private Storage storage;
+    private Task tasks;
+    public static TaskList taskList = new TaskList();
+
+
+    public static void main(String[] args) throws DukeException, IOException, ParseException {
+//        String logo = " ____        _        \n"
+//                + "|  _ \\ _   _| | _____ \n"
+//                + "| | | | | | | |/ / _ \\\n"
+//                + "| |_| | |_| |   <  __/\n"
+//                + "|____/ \\__,_|_|\\_\\___|\n";
+//        System.out.println("Hello from\n" + logo);
         greeting();
         userCmd();
     }
 
     //Greeting of Duke
     public static void greeting() {
-        System.out.println("Hello I'm Duke");
-        System.out.println("What can I do for you?");
+        String line = "_____________________________________________\n";
+        System.out.println("Hello I'm Duke\n" + "What can I do for you?\n" + line);
     }
 
     //Interaction with the user
-    public static void userCmd() throws DukeException {
+    public static void userCmd() throws DukeException, IOException, ParseException {
         Scanner input = new Scanner(System.in);
-
-        String userCmd = "";
-        ArrayList<String> cmdList = new ArrayList<>();
-        ArrayList<Task> taskList = new ArrayList<>();
-        String[] cmdTypes = {"bye", "list", "todo", "event", "deadline", "done"};
+        SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy HHmm");
+        formatDate.setLenient(false);
 
         while (true) {
-            userCmd = input.nextLine();
+            String userCmd = input.nextLine();
+            int indexSpace = userCmd.indexOf(" ");
+            String command = (indexSpace != -1) ? userCmd.substring(0, indexSpace) : userCmd;
 
-            if (userCmd.equals("bye")) {
+            if (command.equals("bye")) {
                 System.out.println("Bye. Hope to see you again soon!");
                 break;
             }
 
-            if (userCmd.equals("list")) {
+            else if (command.equals("list")) {
                 System.out.println("Here are the tasks in your list:");
-                for(int i=0; i<taskList.size(); i++) {
-                    System.out.println(i+1 + ". " + taskList.get(i).toString());
+                for (int i = 0; i < taskList.size(); i++) {
+                    System.out.println(i + 1 + ". " + taskList.getTask(i).toString());
                 }
             }
-            else if (userCmd.contains("done")) {
+
+            else if (command.equals("done")) {
                 System.out.println("Nice! I've marked this tasks as done:");
                 String[] numberString = userCmd.split(" ");
                 int number = parseInt(numberString[1]);
-                taskList.get(number-1).toggleIsDone();
-                System.out.println("[" + taskList.get(number-1).getStatusIcon() + "] " + taskList.get(number-1).getDescription());
+                taskList.getTask(number - 1).toggleIsDone();
+                System.out.println("[" + taskList.getTask(number - 1).getStatusIcon() + "] " + taskList.getTask(number - 1).getDescription());
+                Storage s = new Storage();
+                s.markDone(number);
             }
 
             //if todo is the command
-            else if (userCmd.contains("todo")) {
+            else if (command.equals("todo")) {
                 String[] userInput = userCmd.split(" ");
                 String task = "";
 
                 //Throwing an exception if argument is empty
-                if(userInput.length == 1) {
-                    throw new DukeException("☹ OOPS!!! The description of a todo cannot be empty.");
+                if (userInput.length == 1) {
+                    System.out.println("☹ OOPS!!! The description of a todo cannot be empty.");
+                    continue;
                 }
 
-                for(int i=1; i<userInput.length; i++) {
+                for (int i = 1; i < userInput.length; i++) {
                     task += userInput[i] + " ";
                 }
-                Task t = new ToDo(task);
-                taskList.add(t);
+                Task t = new ToDo(task, false);
+                taskList.addTask(t);
                 System.out.println("Got it. I've added this task:");
                 System.out.println(t.toString());
                 System.out.println("Now you have " + taskList.size() + " in the list");
+
+                try {
+                    Storage p = new Storage("T", t.getDescription());
+                    p.addToFile();
+                }
+                catch (IOException e) {
+                    System.out.println("There is something wrong with the file");
+                }
             }
 
             //if deadline is the command
-            else if (userCmd.contains("deadline")) {
+            else if (command.equals("deadline")) {
                 String[] userInput = userCmd.split(" ");
+                int indexOfTime = userCmd.indexOf("/by");
                 String task = "";
-                String date = "";
-                for(int i=1; i<userInput.length; i++) {
-                    if(userInput[i].equals("/by")) {
-                        date = userInput[i+1];
-                        break;
-                    }
-                    task += userInput[i] + " ";
-                }
-                System.out.println(task);
-                Task t = new Deadline(task, date);
-                taskList.add(t);
-                System.out.println("Got it. I've added this task:");
-                System.out.println(t.toString());
-                System.out.println("Now you have " + taskList.size() + " in the list");
-            }
-
-            //if event is the command
-            else if (userCmd.contains("event")) {
-                String[] userInput = userCmd.split(" ");
-                String task = "";
-                String date = "";
-                for(int i=1; i<userInput.length; i++) {
-                    if(userInput[i].equals("/at")) {
-                        for(int j=i+1; j<userInput.length; j++) {
-                            date += userInput[j] + " ";
+                String time = "";
+                Date date = formatDate.parse(userCmd.substring(indexOfTime + 4));
+                for (int i = 1; i < userInput.length; i++) {
+                    if (userInput[i].equals("/by")) {
+                        for (int j = i + 1; j < userInput.length; j++) {
+                            time += userInput[j] + " ";
                         }
                         break;
                     }
                     task += userInput[i] + " ";
                 }
                 System.out.println(task);
-                Task t = new Event(task, date);
-                taskList.add(t);
+                Task t = new Deadline(task, false, time);
+                taskList.addTask(t);
                 System.out.println("Got it. I've added this task:");
                 System.out.println(t.toString());
-                System.out.println("Now you have " + taskList.size() + "tasks in the list");
+                System.out.println("Now you have " + taskList.size() + " in the list");
+
+                //Writing to file
+                Storage p = new Storage("D", t.getDescription(), time);
+                p.addToFile();
+            }
+
+            //if event is the command
+            else if (command.equals("event")) {
+                String[] userInput = userCmd.split(" ");
+                int indexOfTime = userCmd.indexOf("/at");
+                Date date = formatDate.parse(userCmd.substring(indexOfTime + 4));
+
+                String task = "";
+                String time = "";
+                for (int i = 1; i < userInput.length; i++) {
+                    if (userInput[i].equals("/at")) {
+                        for (int j = i + 1; j < userInput.length; j++) {
+                            time += userInput[j] + " ";
+                        }
+                        break;
+                    }
+                    task += userInput[i] + " ";
+                }
+                System.out.println(task);
+                Task t = new Event(task, false, time);
+                taskList.addTask(t);
+                System.out.println("Got it. I've added this task:");
+                System.out.println(t.toString());
+                System.out.println("Now you have " + taskList.size() + " tasks in the list");
+
+                Storage p = new Storage("E", t.getDescription(), time);
+                p.addToFile();
+            }
+
+
+
+            else if (command.equals("clear")) {
+                System.out.println("List is cleared");
+                Storage p = new Storage();
+                p.clear();
+                taskList.clear();
+            }
+
+
+
+            else if (command.equals("read")) {
+                Storage load = new Storage();
+                taskList = load.read();
             }
 
             //if no command words are being used
@@ -126,3 +179,5 @@ public class Duke {
         }
     }
 }
+
+
