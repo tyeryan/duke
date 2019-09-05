@@ -131,25 +131,22 @@ public class Storage {
         bw.close();
     }
 
-//    public ArrayList<Integer> find(String input) throws IOException {
-//        ArrayList<Integer> findList = new ArrayList<>();
-//        File fileModified = new File(file);
-//        BufferedReader br = new BufferedReader(new FileReader(fileModified));
-//
-//        String inputLine = br.readLine();
-//        int count = 0;
-//        while (inputLine != null) {
-//            if (inputLine.contains(input)) {
-//                findList.add(count);
-//            }
-//            inputLine = br.readLine();
-//            count += 1;
-//        }
-//        return findList;
-//    }
 
+    public ArrayList<Integer> find(String input) throws IOException {
+        ArrayList<Integer> findList = new ArrayList<>();
+        File fileModified = new File(file);
+        BufferedReader br = new BufferedReader(new FileReader(fileModified));
+
+        String inputLine = br.readLine();
+        int count = 0;
+        while (inputLine != null) {
+            if (inputLine.contains(input)) {
+                findList.add(count);
+            }
+            inputLine = br.readLine();
+            count += 1;
+        }
+        return findList;
+    }
 
 }
-
-
-

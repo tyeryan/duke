@@ -163,9 +163,9 @@ public class Duke {
             else if (command.equals("delete")) {
                 try {
                     int index = parseInt(userCmd.substring(7));
-                    taskList.remove(index - 1);
                     System.out.println("Noted. I've removed this task:");
-                    System.out.println(taskList.getTask(index -1 ));
+                    System.out.println(taskList.getTask(index-1));
+                    taskList.remove(index-1);
                     System.out.println("Now you have " + taskList.size() + " tasks in the list.");
 
                     Storage s = new Storage();
@@ -183,14 +183,15 @@ public class Duke {
                 taskList.clear();
             }
 
-//            else if (command.equals("find")) {
-//                Storage s = new Storage();
-//                ArrayList<Integer> findList = s.find(userCmd.substring(5));
-//                System.out.println("Here are the matching tasks in your list:");
-//                for(int i=1; i<=findList.size(); i++) {
-//                    System.out.println(i + ". " + taskList.getTask(findList.get(i-1)));
-//                }
-//            }
+
+            else if (command.equals("find")) {
+                Storage s = new Storage();
+                ArrayList<Integer> findList = s.find(userCmd.substring(5));
+                System.out.println("Here are the matching tasks in your list:");
+                for(int i=1; i<=findList.size(); i++) {
+                    System.out.println(i + ". " + taskList.getTask(findList.get(i-1)));
+                }
+            }
 
 
             else if (command.equals("read")) {
@@ -201,11 +202,6 @@ public class Duke {
             //if no command words are being used
             else {
                 System.out.println("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
-//                throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
-//                Task t = new Task(userCmd);
-//                taskList.add(t);
-//                cmdList.add(userCmd);
-//                System.out.println("added: " + userCmd);
             }
         }
     }
