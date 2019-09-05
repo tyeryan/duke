@@ -12,8 +12,6 @@ import static java.lang.Integer.parseInt;
 import static java.text.DateFormat.*;
 
 public class Duke {
-    private Storage storage;
-    private Task tasks;
     public static TaskList taskList = new TaskList();
 
 
