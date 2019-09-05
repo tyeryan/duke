@@ -67,13 +67,13 @@ public class Duke {
                 s.markDone(number);
             }
 
-            //if todo is the command
+
             else if (command.equals("todo")) {
                 String[] userInput = userCmd.split(" ");
                 String task = "";
 
                 //Throwing an exception if argument is empty
-                if (userInput.length == 1) {
+                if (userCmd.substring(5).isEmpty()) {
                     System.out.println("☹ OOPS!!! The description of a todo cannot be empty.");
                     continue;
                 }
@@ -99,6 +99,10 @@ public class Duke {
             //if deadline is the command
             else if (command.equals("deadline")) {
                 String[] userInput = userCmd.split(" ");
+                if (userCmd.substring(5).isEmpty()) {
+                    System.out.println("☹ OOPS!!! The description of a deadline cannot be empty.");
+                    continue;
+                }
                 int indexOfTime = userCmd.indexOf("/by");
                 String task = "";
                 String time = "";
@@ -127,6 +131,10 @@ public class Duke {
             //if event is the command
             else if (command.equals("event")) {
                 String[] userInput = userCmd.split(" ");
+                if (userCmd.substring(5).isEmpty()) {
+                    System.out.println("☹ OOPS!!! The description of an event cannot be empty.");
+                    continue;
+                }
                 int indexOfTime = userCmd.indexOf("/at");
                 Date date = formatDate.parse(userCmd.substring(indexOfTime + 4));
 
@@ -152,7 +160,21 @@ public class Duke {
                 p.addToFile();
             }
 
+            else if (command.equals("delete")) {
+                try {
+                    int index = parseInt(userCmd.substring(7));
+                    taskList.remove(index - 1);
+                    System.out.println("Noted. I've removed this task:");
+                    System.out.println(taskList.getTask(index -1 ));
+                    System.out.println("Now you have " + taskList.size() + " tasks in the list.");
 
+                    Storage s = new Storage();
+                    s.remove(index);
+                }
+                catch (IOException e){
+                    System.out.println("There is something wrong with the file");
+                }
+            }
 
             else if (command.equals("clear")) {
                 System.out.println("List is cleared");
@@ -161,6 +183,14 @@ public class Duke {
                 taskList.clear();
             }
 
+//            else if (command.equals("find")) {
+//                Storage s = new Storage();
+//                ArrayList<Integer> findList = s.find(userCmd.substring(5));
+//                System.out.println("Here are the matching tasks in your list:");
+//                for(int i=1; i<=findList.size(); i++) {
+//                    System.out.println(i + ". " + taskList.getTask(findList.get(i-1)));
+//                }
+//            }
 
 
             else if (command.equals("read")) {
@@ -170,7 +200,8 @@ public class Duke {
 
             //if no command words are being used
             else {
-                throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+                System.out.println("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+//                throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
 //                Task t = new Task(userCmd);
 //                taskList.add(t);
 //                cmdList.add(userCmd);

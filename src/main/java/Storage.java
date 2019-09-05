@@ -99,12 +99,55 @@ public class Storage {
         bw.close();
     }
 
+    public void remove(int taskNum) throws IOException {
+        String content = "";
+        File fileModified = new File(file);
+        BufferedReader br = new BufferedReader(new FileReader(fileModified));
+
+        String taskLine = br.readLine();
+        int count = 1;
+        while (taskLine != null) {
+            if (count == taskNum) {
+                taskLine = br.readLine();
+                count += 1;
+                continue;
+            }
+            content = content + taskLine + System.lineSeparator();
+            taskLine = br.readLine();
+            count += 1;
+        }
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(fileModified));
+        bw.write(content);
+
+        br.close();
+        bw.close();
+    }
+
 
     public void clear() throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
         bw.write(" ");
         bw.close();
     }
+
+//    public ArrayList<Integer> find(String input) throws IOException {
+//        ArrayList<Integer> findList = new ArrayList<>();
+//        File fileModified = new File(file);
+//        BufferedReader br = new BufferedReader(new FileReader(fileModified));
+//
+//        String inputLine = br.readLine();
+//        int count = 0;
+//        while (inputLine != null) {
+//            if (inputLine.contains(input)) {
+//                findList.add(count);
+//            }
+//            inputLine = br.readLine();
+//            count += 1;
+//        }
+//        return findList;
+//    }
+
 
 }
 
