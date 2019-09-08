@@ -1,6 +1,11 @@
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * Storage class which acts like a database for Duke.
+ * All tasks will be written to an output file and the data can be read
+ * by the user inputting a read command
+ */
 
 public class Storage {
     protected String type;
@@ -24,6 +29,11 @@ public class Storage {
         this.date = date;
     }
 
+    /**
+     * Adds the tasks into a text file with a certain format
+     *
+     * @throws IOException
+     */
     public void addToFile() throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
         String fileContent = type + "|0|" + description + "|" + date + System.lineSeparator();
@@ -31,6 +41,12 @@ public class Storage {
         bw.close();
     }
 
+    /**
+     * Read the tasks from the data file and inserts it back into Duke.
+     *
+     * @return The old taskList that has been stored in the text file
+     * @throws IOException
+     */
     public TaskList read() throws IOException {
         TaskList taskList = new TaskList();
         BufferedReader br = new BufferedReader(new FileReader(file));
@@ -77,6 +93,13 @@ public class Storage {
         return taskList;
     }
 
+    /**
+     * Tasks in the task number and mark it as completed in the database by changing
+     * the value of the output from '0' to '1'. Following a boolean function.
+     *
+     * @param taskNum the task number in the taskList
+     * @throws IOException
+     */
     public void markDone (int taskNum) throws IOException {
         String des = "";
         File fileModified = new File(file);
@@ -99,6 +122,12 @@ public class Storage {
         bw.close();
     }
 
+    /**
+     * Remove a certain task in the database based on the task number inputted.
+     *
+     * @param taskNum the task number in the taskList
+     * @throws IOException
+     */
     public void remove(int taskNum) throws IOException {
         String content = "";
         File fileModified = new File(file);
@@ -125,6 +154,11 @@ public class Storage {
     }
 
 
+    /**
+     * Clearing the whole list. Making the list empty.
+     *
+     * @throws IOException
+     */
     public void clear() throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
         bw.write(" ");
@@ -132,6 +166,13 @@ public class Storage {
     }
 
 
+    /**
+     * Finding certain tasks which has the same keywords as the input string.
+     *
+     * @param input A string which contains the keywords the user wants to find
+     * @return An ArrayList of integers containing the task numbers of the tasks found.
+     * @throws IOException
+     */
     public ArrayList<Integer> find(String input) throws IOException {
         ArrayList<Integer> findList = new ArrayList<>();
         File fileModified = new File(file);

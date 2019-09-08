@@ -1,18 +1,21 @@
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import static java.lang.Integer.parseInt;
-import static java.text.DateFormat.*;
 
+/**
+ * The Duke program implements an personal assistant application
+ * which helps you keep track of your tasks.
+ *
+ * @author  Ryan Tay
+ * @version 1.0
+ */
 public class Duke {
     public static TaskList taskList = new TaskList();
+    public static Storage storage = new Storage();
 
 
     public static void main(String[] args) throws DukeException, IOException, ParseException {
@@ -26,14 +29,23 @@ public class Duke {
         userCmd();
     }
 
-    //Greeting of Duke
+    /**
+     * This function prints the welcome message for duke
+     * prompting the user for its input
+     */
     public static void greeting() {
         String line = "_____________________________________________\n";
         System.out.println("Hello I'm Duke\n" + "What can I do for you?\n" + line);
     }
 
-    //Interaction with the user
-    public static void userCmd() throws DukeException, IOException, ParseException {
+    /**
+     * This function takes in the user inputs and will execute a command based on the input
+     * if the command is valid if not it will prompt the user for a valid input.
+     *
+     * @throws IOException
+     * @throws ParseException
+     */
+    public static void userCmd() throws IOException, ParseException {
         Scanner input = new Scanner(System.in);
         SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy HHmm");
         formatDate.setLenient(false);
@@ -61,8 +73,8 @@ public class Duke {
                 int number = parseInt(numberString[1]);
                 taskList.getTask(number - 1).toggleIsDone();
                 System.out.println("[" + taskList.getTask(number - 1).getStatusIcon() + "] " + taskList.getTask(number - 1).getDescription());
-                Storage s = new Storage();
-                s.markDone(number);
+                //Storage s = new Storage();
+                storage.markDone(number);
             }
 
 
@@ -86,8 +98,8 @@ public class Duke {
                 System.out.println("Now you have " + taskList.size() + " in the list");
 
                 try {
-                    Storage p = new Storage("T", t.getDescription());
-                    p.addToFile();
+                    storage = new Storage("T", t.getDescription());
+                    storage.addToFile();
                 }
                 catch (IOException e) {
                     System.out.println("There is something wrong with the file");
@@ -114,7 +126,7 @@ public class Duke {
                     }
                     task += userInput[i] + " ";
                 }
-                System.out.println(task);
+
                 Task t = new Deadline(task, false, time);
                 taskList.addTask(t);
                 System.out.println("Got it. I've added this task:");
@@ -122,8 +134,8 @@ public class Duke {
                 System.out.println("Now you have " + taskList.size() + " in the list");
 
                 //Writing to file
-                Storage p = new Storage("D", t.getDescription(), time);
-                p.addToFile();
+                storage = new Storage("D", t.getDescription(), time);
+                storage.addToFile();
             }
 
             //if event is the command
@@ -154,8 +166,8 @@ public class Duke {
                 System.out.println(t.toString());
                 System.out.println("Now you have " + taskList.size() + " tasks in the list");
 
-                Storage p = new Storage("E", t.getDescription(), time);
-                p.addToFile();
+                storage = new Storage("E", t.getDescription(), time);
+                storage.addToFile();
             }
 
             else if (command.equals("delete")) {
@@ -166,8 +178,8 @@ public class Duke {
                     taskList.remove(index-1);
                     System.out.println("Now you have " + taskList.size() + " tasks in the list.");
 
-                    Storage s = new Storage();
-                    s.remove(index);
+                    storage = new Storage();
+                    storage.remove(index);
                 }
                 catch (IOException e){
                     System.out.println("There is something wrong with the file");
@@ -176,15 +188,15 @@ public class Duke {
 
             else if (command.equals("clear")) {
                 System.out.println("List is cleared");
-                Storage p = new Storage();
-                p.clear();
+                storage = new Storage();
+                storage.clear();
                 taskList.clear();
             }
 
 
             else if (command.equals("find")) {
-                Storage s = new Storage();
-                ArrayList<Integer> findList = s.find(userCmd.substring(5));
+                storage = new Storage();
+                ArrayList<Integer> findList = storage.find(userCmd.substring(5));
                 System.out.println("Here are the matching tasks in your list:");
                 for(int i=1; i<=findList.size(); i++) {
                     System.out.println(i + ". " + taskList.getTask(findList.get(i-1)));
@@ -193,8 +205,8 @@ public class Duke {
 
 
             else if (command.equals("read")) {
-                Storage load = new Storage();
-                taskList = load.read();
+                storage = new Storage();
+                taskList = storage.read();
             }
 
             //if no command words are being used
