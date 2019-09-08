@@ -1,0 +1,17 @@
+Hello I'm Duke
+What can I do for you?
+_____________________________________________
+
+☹ OOPS!!! I'm sorry, but I don't know what that means :-(
+Got it. I've added this task:
+[T][?] borrow book 
+Now you have 1 in the list
+Got it. I've added this task:
+[T][?] read book 
+Now you have 2 in the list
+Got it. I've added this task:
+[D][?] homework  (by: 07/09/2019 2359 )
+Now you have 3 in the list
+Got it. I've added this task:
+[D][?] quiz  (by: 09/09/2019 2359 )
+Now you have 4 in the list
