@@ -41,6 +41,17 @@ public class Duke {
     /**
      * This function takes in the user inputs and will execute a command based on the input
      * if the command is valid if not it will prompt the user for a valid input.
+     * List of valid inputs:
+     * 1. bye: Exits the duke program
+     * 2. list: Lists out all the tasks
+     * 3. done: Marks a tasks as done by inputting the task number. eg. done 2
+     * 4. todo: Creates a new todo task
+     * 5. deadline: Creates a new deadline task
+     * 6. event: Creates a new event task
+     * 7. delete: Deletes a task from the list. eg. delete 3
+     * 8. clear: Clears all the tasks in the list
+     * 9. find: Find all the tasks that contains the keyword in the list. eg. Find work
+     * 10. read: Reads the saved tasks from the previous time the program was ran.
      *
      * @throws IOException
      * @throws ParseException
